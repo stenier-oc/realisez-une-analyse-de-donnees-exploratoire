@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn import decomposition
+from sklearn import decomposition, preprocessing
 from functions import *
 
 
@@ -10,8 +10,9 @@ n_comp = 3
 data = pd.read_csv("mystery.csv")
 X = data.values
 
-# Centrer et réduire n'est ici pas nécessaire car les variables sont exprimées dans la même unité
-# X_scaled = preprocessing.StandardScaler().fit_transform(X)
+# Réduire n'est ici pas nécessaire car les variables sont exprimées dans la même unité. 
+# On se contente juste de centrer les données, ce qui est obligatoire pour une ACP.
+X = preprocessing.StandardScaler(with_std=False).fit_transform(X)
 
 # Calcul des composantes principales
 pca = decomposition.PCA(n_components= n_comp)
@@ -49,9 +50,9 @@ ax = fig.add_subplot(111, projection='3d')
 ax.set_aspect('equal')
 ax.set_xlim(-30,30)
 ax.set_ylim(-30,30)
-ax.set_zlim(0,60)
+ax.set_zlim(-30,30)
 fig.tight_layout()
-x, y, z = data.values.T
+x, y, z = X.T
 ax.scatter(x, y, z, alpha = 0.1, s=1)
 plt.title("Tournez le chat à l'aide de la souris ;)")
 
@@ -59,8 +60,8 @@ plt.title("Tournez le chat à l'aide de la souris ;)")
 pcs = pca.components_
 for i in range(3):
     eigen_vector_x20 = pcs[i] * 20
-    eigen_vector = Arrow3D([0, eigen_vector_x20[0]], [0, eigen_vector_x20[1]],[60, 60+eigen_vector_x20[2]], mutation_scale=20, lw=1, arrowstyle="-|>", color="#4c72b0")
+    eigen_vector = Arrow3D([0, eigen_vector_x20[0]], [0, eigen_vector_x20[1]],[30, 30+eigen_vector_x20[2]], mutation_scale=20, lw=1, arrowstyle="-|>", color="#4c72b0", alpha=.7)
     ax.add_artist(eigen_vector)
-    ax.text3D(eigen_vector_x20[0],eigen_vector_x20[1],60+eigen_vector_x20[2],"F{} (x20)".format(i+1), color="grey")
+    ax.text3D(eigen_vector_x20[0],eigen_vector_x20[1],30+eigen_vector_x20[2],"u{} (x20)".format(i+1), color="#333333")
 
 plt.show()
