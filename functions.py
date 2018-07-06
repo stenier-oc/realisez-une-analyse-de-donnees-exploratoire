@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 import numpy as np
 import pandas as pd
+from scipy.cluster.hierarchy import dendrogram
 
 def display_circles(pcs, n_comp, pca, axis_ranks, labels=None, label_rotation=0, lims=None):
-    for d1, d2 in axis_ranks: # On affiche les 3 premiers plas fatoriel, donc les 6 premières composantes
+    for d1, d2 in axis_ranks: # On affiche les 3 premiers plans factoriels, donc les 6 premières composantes
         if d2 < n_comp:
 
             # initialisation de la figure
@@ -101,3 +102,15 @@ def display_scree_plot(pca):
     plt.ylabel("pourcentage d'inertie")
     plt.title("Eboulis des valeurs propres")
     plt.show(block=False)
+
+def plot_dendrogram(Z, names):
+    plt.figure(figsize=(10,25))
+    plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel('distance')
+    dendrogram(
+        Z,
+        labels = names,
+        orientation = "left",
+    )
+    plt.show()
+

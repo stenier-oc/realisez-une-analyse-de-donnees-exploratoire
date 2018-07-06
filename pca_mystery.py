@@ -11,9 +11,10 @@ data = pd.read_csv("mystery.csv")
 X = data.values
 
 # Centrer et réduire n'est ici pas nécessaire car les variables sont exprimées dans la même unité
+# X_scaled = preprocessing.StandardScaler().fit_transform(X)
 
 # Calcul des composantes principales
-pca = decomposition.PCA(n_components=n_comp)
+pca = decomposition.PCA(n_components= n_comp)
 pca.fit(X)
 
 # Eboulis des valeurs propres
