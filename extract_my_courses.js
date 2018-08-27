@@ -1,6 +1,6 @@
 // Paramètres
 var colonnesCSV = ["titreCours", "inscription", "progression", "moyenneDeClasse", "duree", "difficulte", "nbChapitres", "ratioQuizEvaluation", "nbEvaluations", "derniereMiseAJour", "idCours"], // Nom des colonnes dans le CSV à créer
-    tempsEntreRequetes = 1000; // en ms
+    tempsEntreRequetes = 2000; // en ms
 
 // Variables relatives au DOM :
 var colonnesADetecter = {
@@ -34,7 +34,7 @@ function extraireTitresColonnes(index, colonne) {
 function controlerColonnes() {
     for (c in colonnesADetecter) {
         if (titresColonnes.indexOf(colonnesADetecter[c]) == -1) {
-            throw Error("La colonne '" + colonnesADetecter[c] + "' n'a pas été trouvée dans la page html");
+            throw Error("La colonne '" + colonnesADetecter[c] + "' n'a pas été trouvée dans la page html. Êtes-vous bien sur votre page d'accueil ? Réessayez en actualisant la page. Sinon, envoyez un message sur le forum du cours.");
         }
     }
 }
