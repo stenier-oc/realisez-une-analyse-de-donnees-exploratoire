@@ -7,14 +7,13 @@ var colonnesADetecter = {
         titreCours: "Cours",
         inscription: "Inscription",
         progression: "Progression",
-        score: "Score"
     }, // Doivent correspondre aux colonnes du tableau des cours visible sur la page dashboard
     idTableau = 'list-course-followed', // identifiant DOM du tableau des cours
     selecteurCssColonnesTableau = 'thead>tr>th', // selecteur css pour acceder aux colonnes du tableau
     selecteurCssListeCours = 'tbody>tr', // selecteur css pour acceder a la liste des cours
     selecteurCssLignesTableau = 'td', // sélecteur css pour accéder à chaque ligne du tableau
-    selecteurCssInfoHeader = ".course-header__detailsGroup--info >> li", // sélecteur css pour accéder à la durée et à la diffulté, contenues dans le header de la page d'accueil d'un cours donné
-    selecteurCssMiseAJour = ".course-header__updatedTime";
+    selecteurCssHeaderDetails = ".courseHeader__detailsList > li", // sélecteur css pour accéder à la durée et à la diffulté, contenues dans le header de la page d'accueil d'un cours donné
+    selecteurCssMiseAJour = ".courseHeader__updatedTime";
 
 var titresColonnes = [], // contiendra le titre des colonnes du tableau des cours tel qu'affiche sur le site
     cptCours = 0, // compte les cours dont les informations ont été extraites
@@ -70,19 +69,6 @@ function extraireProgression(cellule, ignorerCours) {
     return ([progression, ignorerCours])
 }
 
-function extraireMoyenneClasse(cellule) {
-    var score = $(cellule).text().trim();
-    var pourcentage = score.match(/la\sclasse\s[0-9]{1,3}\s?%/);
-
-    if (pourcentage === null) {
-        moyenneClasse = null;
-    } else {
-        pourcentage = pourcentage[0].match(/[0-9]{1,3}/);
-        moyenneClasse = 1 * pourcentage // convertion de string vers integer
-    }
-    return (moyenneClasse)
-}
-
 function extraireIdCours(urlDuCours) {
     return (urlDuCours.match(/courses\/(\d{2,10})/i)[1] * 1);
 }
@@ -101,7 +87,7 @@ function extraireHeader(htmlMain) {
 }
 
 function extraireInfoHeader(htmlHeader) {
-    return ($(htmlHeader).find(selecteurCssInfoHeader));
+    return ($(htmlHeader).find(selecteurCssHeaderDetails));
 }
 
 function extraireDureeDifficulte(htmlHeader) {
@@ -235,7 +221,7 @@ function extraireInfoPageCours(result, urlDuCours, titreCours, inscription, prog
     [duree, difficulte] = extraireDureeDifficulte(htmlHeader);
 
     // extraction de la duree depuis la derniere mise à jour
-    miseAJour = extraireMiseAJour(htmlHeader);
+    miseAJour = extraireMiseAJour(htmlMain);
 
     //extraction du nombre de chapitres
     [nbChapitres, nbQuiz, nbActivites] = compterChapitres(htmlNav);
@@ -259,6 +245,8 @@ function extraireInfosCours() {
 
         var ignorerCours = false;
 
+        moyenneClasse = 0 // En 2018, la moyenne de classe n'est plus affichée sur le dashboard. On la remplit donc par 0
+
         cellules.each(
             // extrait les infos d'une ligne du tableau, qui sont les caractéristiques du cours correspondant à la ligne en question 
             function(index, cellule) {
@@ -279,11 +267,6 @@ function extraireInfosCours() {
                 if (titreColonne == colonnesADetecter['progression']) {
                     // Si la progression est de 0%, alors on ignore le cours : la variable ignorerCours est alors à true. Autrement, elle reste inchangée.
                     [progression, ignorerCours] = extraireProgression(cellule, ignorerCours);
-                }
-
-                // Detection de la moyenne de classe
-                if (titreColonne == colonnesADetecter['score']) {
-                    moyenneClasse = extraireMoyenneClasse(cellule);
                 }
             }
         );
