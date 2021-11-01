@@ -2,6 +2,7 @@
 var colonnesCSV = ["titreCours", "inscription", "progression", "moyenneDeClasse", "duree", "difficulte", "nbChapitres", "ratioQuizEvaluation", "nbEvaluations", "derniereMiseAJour", "idCours"], // Nom des colonnes dans le CSV à créer
     tempsEntreRequetes = 2000; // en ms
 
+
 // Variables relatives au DOM :
 var colonnesADetecter = {
         titreCours: "Cours",
