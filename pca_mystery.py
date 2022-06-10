@@ -36,6 +36,7 @@ from matplotlib.patches import FancyArrowPatch
 
 class Arrow3D(FancyArrowPatch):
     def __init__(self, xs, ys, zs, *args, **kwargs):
+        super().__init__((0,0), (0,0), *args, **kwargs)
         FancyArrowPatch.__init__(self, (0,0), (0,0), *args, **kwargs)
         self._verts3d = xs, ys, zs
 
@@ -45,9 +46,16 @@ class Arrow3D(FancyArrowPatch):
         self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
         FancyArrowPatch.draw(self, renderer)
 
+    def do_3d_projection(self, renderer=None):
+        xs3d, ys3d, zs3d = self._verts3d
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
+        self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
+
+        return np.min(zs)
+
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.set_aspect('equal')
+ax.set_aspect('auto')
 ax.set_xlim(-30,30)
 ax.set_ylim(-30,30)
 ax.set_zlim(-30,30)
